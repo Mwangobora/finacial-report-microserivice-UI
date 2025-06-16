@@ -1,4 +1,12 @@
 export interface Entity {
+  hidden: any
+  accrual_method: any
+  city: any
+  state: any
+  email: any
+  phone: any
+  address_1: ReactNode
+  website: ReactNode
   uuid: string
   name: string
   type: string

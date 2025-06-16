@@ -16,12 +16,14 @@ import { useEntities } from "@/features/entities/hooks"
 import { EntityCard } from "@/features/entities/components/EntityCard"
 import { CreateEntityForm } from "@/features/entities/components/CreateEntityForm"
 import { useToast } from "@/hooks/use-toast"
-import type { CreateEntityRequest } from "@/types"
+import { useAppContext } from "@/contexts/AppContext"
+import type { CreateEntityRequest } from "@/features/entities/types"
 
 export function EntitiesPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [creating, setCreating] = useState(false)
   const { entities, loading, addEntity } = useEntities()
+  const { setSelectedEntity } = useAppContext()
   const { toast } = useToast()
 
   const handleCreateEntity = async (data: CreateEntityRequest) => {
@@ -45,8 +47,7 @@ export function EntitiesPage() {
   }
 
   const handleEntitySelect = (entityUuid: string) => {
-    // Store selected entity in localStorage or context
-    localStorage.setItem("selectedEntity", entityUuid)
+    setSelectedEntity(entityUuid)
     toast({
       title: "Entity Selected",
       description: "You can now manage ledgers for this entity",
