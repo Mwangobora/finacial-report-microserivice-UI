@@ -1,4 +1,4 @@
-const BASE_URL = "https://financial-report-backend.onrender.com/"
+const BASE_URL = "https://financial-report-backend.onrender.com/report_microservice/api/"
 
 export class ApiError extends Error {
   constructor(
