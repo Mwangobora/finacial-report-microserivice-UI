@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/api"
-import type { Ledger, CreateLedgerRequest } from "./types"
+import type { Ledger, CreateLedgerRequest } from "@/types"
 
 export async function getEntityLedgers(entityUuid: string): Promise<Ledger[]> {
   try {

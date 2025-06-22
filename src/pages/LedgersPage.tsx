@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Plus, BookOpen, Lock, Eye, EyeOff, CheckCircle } from "lucide-react"
+import { LedgersTable } from "@/features/ledgers/components/LedgersTable"
 import { useLedgers } from "@/features/ledgers/hooks"
 import { useAppContext } from "@/contexts/AppContext"
 import { useToast } from "@/hooks/use-toast"
@@ -112,7 +113,7 @@ export function LedgersPage() {
     )
   }
 
-  if (loading) {
+  if (loading === "loading") {
     return <div className="flex items-center justify-center h-64">Loading ledgers...</div>
   }
 
@@ -191,92 +192,14 @@ export function LedgersPage() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {ledgers.map((ledger) => (
-          <Card key={ledger.uuid} className="cursor-pointer hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center space-x-2">
-                  <BookOpen className="h-5 w-5" />
-                  <span className="truncate">{ledger.ledger_name}</span>
-                </CardTitle>
-                <div className="flex space-x-1">
-                  {ledger.posted && <Badge variant="default">Posted</Badge>}
-                  {ledger.locked && <Lock className="h-4 w-4 text-muted-foreground" />}
-                  {ledger.hidden ? (
-                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </div>
-              </div>
-              <CardDescription>UUID: {ledger.uuid.slice(0, 8)}...</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span>Status:</span>
-                  <div className="flex space-x-1">
-                    {ledger.posted && (
-                      <Badge variant="secondary" className="text-xs">
-                        Posted
-                      </Badge>
-                    )}
-                    {ledger.locked && (
-                      <Badge variant="destructive" className="text-xs">
-                        Locked
-                      </Badge>
-                    )}
-                    {!ledger.posted && !ledger.locked && (
-                      <Badge variant="outline" className="text-xs">
-                        Active
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Button className="w-full" onClick={() => handleLedgerSelect(ledger.ledger_name)}>
-                    Select Ledger
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => handleCreateChartOfAccounts(ledger.ledger_name)}
-                    disabled={creatingChart === ledger.ledger_name}
-                  >
-                    {creatingChart === ledger.ledger_name ? (
-                      "Creating Chart..."
-                    ) : (
-                      <>
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        Create Chart of Accounts
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {ledgers.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <BookOpen className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No ledgers found</h3>
-            <p className="text-muted-foreground text-center mb-4">
-              Create your first ledger for this entity to start tracking financial data
-            </p>
-            <Button onClick={() => setDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create First Ledger
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      <LedgersTable
+        ledgers={ledgers}
+        loading={loading === "loading"}
+        onAdd={() => setDialogOpen(true)}
+        onSelect={handleLedgerSelect}
+        onGenerateChart={handleCreateChartOfAccounts}
+        generatingChart={creatingChart}
+      />
     </div>
   )
 }

@@ -25,7 +25,8 @@ import { useAppContext } from "@/contexts/AppContext"
 import { formatCurrency } from "@/utils/FormatMoney"
 import { formatDateTime } from "@/utils/FormatDate"
 import { useToast } from "@/hooks/use-toast"
-import type { CreateTransactionRequest } from "@/features/transanctions/types"
+import type { CreateTransactionRequest } from "@/types"
+import { TransactionsTable } from "@/features/transanctions/components/TransactionsTable"
 
 export function TransactionsPage() {
   const { selectedEntity, selectedLedger } = useAppContext()
@@ -96,7 +97,7 @@ export function TransactionsPage() {
     )
   }
 
-  if (loading) {
+  if (loading === "loading") {
     return <div className="flex items-center justify-center h-64">Loading transactions...</div>
   }
 
@@ -265,50 +266,11 @@ export function TransactionsPage() {
       </div>
 
       {/* Transactions List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
-          <CardDescription>All transactions for the selected ledger</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {transactions.map((transaction) => (
-              <div key={transaction.uuid} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <Badge variant={transaction.tx_type === "dr" ? "destructive" : "default"}>
-                    {transaction.tx_type.toUpperCase()}
-                  </Badge>
-                  <div>
-                    <h4 className="font-medium">{transaction.description || "No description"}</h4>
-                    <p className="text-sm text-muted-foreground">{formatDateTime(transaction.timestamp)}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {getAccountName(transaction.account_uuid)} →{" "}
-                      {getAccountName(transaction.corresponding_account_uuid)}
-                    </p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-medium">{formatCurrency(transaction.amount)}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {transactions.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <ArrowRightLeft className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No transactions found</h3>
-            <p className="text-muted-foreground text-center">Create your first transaction to get started</p>
-            <Button onClick={() => setDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create First Transaction
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      <TransactionsTable
+        transactions={transactions}
+        loading={loading === "loading"}
+        onAdd={() => setDialogOpen(true)}
+      />
     </div>
   )
 }

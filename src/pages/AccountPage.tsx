@@ -7,6 +7,7 @@ import { CreditCard, RefreshCw } from "lucide-react"
 import { useChartOfAccounts, useAccountBalances } from "@/features/accounts/hooks"
 import { useAppContext } from "@/contexts/AppContext"
 import { formatCurrency } from "@/utils/FormatMoney"
+import { AccountsTable } from "@/features/accounts/components/AccountsTable"
 
 export function AccountsPage() {
   const { selectedEntity, selectedLedger } = useAppContext()
@@ -40,7 +41,7 @@ export function AccountsPage() {
     )
   }
 
-  if (chartLoading || balancesLoading) {
+  if (chartLoading === "loading" || balancesLoading === "loading") {
     return <div className="flex items-center justify-center h-64">Loading accounts...</div>
   }
 
@@ -51,8 +52,8 @@ export function AccountsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Account Management</h1>
           <p className="text-muted-foreground">View and manage accounts for the selected ledger</p>
         </div>
-        <Button onClick={handleRefresh} disabled={chartLoading || balancesLoading}>
-          <RefreshCw className={`mr-2 h-4 w-4 ${chartLoading || balancesLoading ? "animate-spin" : ""}`} />
+        <Button onClick={handleRefresh} disabled={chartLoading === "loading" || balancesLoading === "loading"}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${chartLoading === "loading" || balancesLoading === "loading" ? "animate-spin" : ""}`} />
           Refresh
         </Button>
       </div>
@@ -129,43 +130,10 @@ export function AccountsPage() {
       )}
 
       {/* Chart of Accounts */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Chart of Accounts</CardTitle>
-          <CardDescription>Complete list of accounts in the ledger</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {chartOfAccounts.map((account) => (
-              <div key={account.uuid} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center space-x-4">
-                  <Badge variant="outline">{account.account_code}</Badge>
-                  <div>
-                    <h4 className="font-medium">{account.account_name}</h4>
-                    <p className="text-sm text-muted-foreground">{account.account_type}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-medium">{formatCurrency(account.current_balance)}</div>
-                  <div className="text-sm text-muted-foreground">Current Balance</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {chartOfAccounts.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <CreditCard className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No accounts found</h3>
-            <p className="text-muted-foreground text-center">
-              Create a chart of accounts for this ledger to get started
-            </p>
-          </CardContent>
-        </Card>
-      )}
+      <AccountsTable
+        accounts={chartOfAccounts}
+        loading={chartLoading === "loading"}
+      />
     </div>
   )
 }

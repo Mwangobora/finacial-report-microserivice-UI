@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/api"
-import type { Transaction, CreateTransactionRequest } from "./types"
+import type { Transaction, CreateTransactionRequest } from "@/types"
 
 // Create a new transaction
 export async function createTransaction(

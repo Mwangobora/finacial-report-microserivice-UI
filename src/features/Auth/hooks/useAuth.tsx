@@ -16,6 +16,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>
   register: (userData: RegisterData) => Promise<void>
   logout: () => void
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>
+  updateProfile: (profileData: { first_name: string; last_name: string }) => Promise<void>
 }
 
 interface RegisterData {
@@ -27,13 +29,31 @@ interface RegisterData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
+// Cookie utility functions
+const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+};
+
+const setCookie = (name: string, value: string, days: number = 7) => {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;secure;samesite=strict`;
+};
+
+const deleteCookie = (name: string) => {
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+};
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
 
   // Check for existing token on mount
   useEffect(() => {
-    const token = localStorage.getItem("auth_token")
+    const token = getCookie("auth_token")
     if (token) {
       // Verify token by calling the profile endpoint
       verifyToken(token)
@@ -44,15 +64,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const verifyToken = async (token: string) => {
     try {
-      const response = await apiRequest<User>("/profile", {
+      const response = await apiRequest<{ user: User }>("/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      setUser(response)
+      setUser(response.user)
     } catch (error) {
       // Token is invalid, remove it
-      localStorage.removeItem("auth_token")
+      deleteCookie("auth_token")
       console.log("Token verification failed:", error)
     } finally {
       setLoading(false)
@@ -66,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({ email, password }),
       })
 
-      localStorage.setItem("auth_token", response.token)
+      setCookie("auth_token", response.token, 7) // 7 days expiry
       setUser(response.user)
     } catch (error) {
       throw error
@@ -80,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify(userData),
       })
 
-      localStorage.setItem("auth_token", response.token)
+      setCookie("auth_token", response.token, 7) // 7 days expiry
       setUser(response.user)
     } catch (error) {
       throw error
@@ -88,11 +108,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const logout = () => {
-    localStorage.removeItem("auth_token")
+    deleteCookie("auth_token")
     setUser(null)
   }
 
-  return <AuthContext.Provider value={{ user, loading, login, register, logout }}>{children}</AuthContext.Provider>
+  const changePassword = async (currentPassword: string, newPassword: string) => {
+    try {
+      await apiRequest("/auth/change-password", {
+        method: "POST",
+        body: JSON.stringify({ currentPassword, newPassword }),
+      })
+    } catch (error) {
+      throw error
+    }
+  }
+
+  const updateProfile = async (profileData: { first_name: string; last_name: string }) => {
+    try {
+      const response = await apiRequest<{ user: User }>("/auth/profile", {
+        method: "PUT",
+        body: JSON.stringify(profileData),
+      })
+      setUser(response.user)
+    } catch (error) {
+      throw error
+    }
+  }
+
+  return <AuthContext.Provider value={{ user, loading, login, register, logout, changePassword, updateProfile }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {

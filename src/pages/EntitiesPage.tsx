@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Plus, Building } from "lucide-react"
+import { Plus } from "lucide-react"
 import { useEntities } from "@/features/entities/hooks"
-import { EntityCard } from "@/features/entities/components/EntityCard"
+import { EntitiesTable } from "@/features/entities/components/EntitiesTable"
 import { CreateEntityForm } from "@/features/entities/components/CreateEntityForm"
 import { useToast } from "@/hooks/use-toast"
 import { useAppContext } from "@/contexts/AppContext"
@@ -54,7 +54,7 @@ export function EntitiesPage() {
     })
   }
 
-  if (loading) {
+  if (loading === "loading") {
     return <div className="flex items-center justify-center h-64">Loading entities...</div>
   }
 
@@ -83,27 +83,12 @@ export function EntitiesPage() {
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {entities.map((entity) => (
-          <EntityCard key={entity.uuid} entity={entity} onSelect={handleEntitySelect} />
-        ))}
-      </div>
-
-      {entities.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Building className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No entities found</h3>
-            <p className="text-muted-foreground text-center mb-4">
-              Create your first entity to get started with financial reporting
-            </p>
-            <Button onClick={() => setDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create First Entity
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      <EntitiesTable
+        entities={entities}
+        loading={loading === "loading"}
+        onAdd={() => setDialogOpen(true)}
+        onSelect={handleEntitySelect}
+      />
     </div>
   )
 }

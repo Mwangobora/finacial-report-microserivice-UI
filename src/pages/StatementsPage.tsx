@@ -8,6 +8,7 @@ import { useBalanceSheet, useIncomeStatement, useCashFlowStatement } from "@/fea
 import { useAppContext } from "@/contexts/AppContext"
 import { formatCurrency } from "@/utils/FormatMoney"
 import { useToast } from "@/hooks/use-toast"
+import { BalanceSheetTable, IncomeStatementTable } from "@/features/statements/components/FinancialStatementTable"
 
 export function StatementsPage() {
   const { selectedEntity, selectedLedger } = useAppContext()
@@ -81,169 +82,35 @@ export function StatementsPage() {
         </TabsList>
 
         <TabsContent value="balance-sheet">
-          <Card>
-            <CardHeader>
-              <CardTitle>Balance Sheet</CardTitle>
-              <CardDescription>Assets, Liabilities, and Equity</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {balanceSheet ? (
-                <div className="space-y-6">
-                  {/* Assets */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Assets</h3>
-                    <div className="space-y-2">
-                      {balanceSheet.assets.map((asset) => (
-                        <div key={asset.uuid} className="flex justify-between">
-                          <span>
-                            {asset.name} ({asset.code})
-                          </span>
-                          <span className="font-medium">{formatCurrency(asset.balance)}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-bold border-t pt-2">
-                        <span>Total Assets</span>
-                        <span>{formatCurrency(balanceSheet.total_assets)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Liabilities */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Liabilities</h3>
-                    <div className="space-y-2">
-                      {balanceSheet.liabilities.map((liability) => (
-                        <div key={liability.uuid} className="flex justify-between">
-                          <span>
-                            {liability.name} ({liability.code})
-                          </span>
-                          <span className="font-medium">{formatCurrency(liability.balance)}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-bold border-t pt-2">
-                        <span>Total Liabilities</span>
-                        <span>{formatCurrency(balanceSheet.total_liabilities)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Equity */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Equity</h3>
-                    <div className="space-y-2">
-                      {balanceSheet.equity.map((equity) => (
-                        <div key={equity.uuid} className="flex justify-between">
-                          <span>
-                            {equity.name} ({equity.code})
-                          </span>
-                          <span className="font-medium">{formatCurrency(equity.balance)}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-bold border-t pt-2">
-                        <span>Total Equity</span>
-                        <span>{formatCurrency(balanceSheet.total_equity)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">Click "Load Statements" to view the balance sheet</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {balanceSheet ? (
+            <BalanceSheetTable balanceSheet={balanceSheet} loading={bsLoading === "loading"} />
+          ) : (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No balance sheet data</h3>
+                <p className="text-muted-foreground text-center">
+                  Click "Load Statements" to view the balance sheet
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="income-statement">
-          <Card>
-            <CardHeader>
-              <CardTitle>Income Statement</CardTitle>
-              <CardDescription>Revenues, Expenses, and Net Income</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {incomeStatement ? (
-                <div className="space-y-6">
-                  {/* Revenues */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Revenues</h3>
-                    <div className="space-y-2">
-                      {incomeStatement.revenues.map((revenue) => (
-                        <div key={revenue.uuid} className="flex justify-between">
-                          <span>
-                            {revenue.name} ({revenue.code})
-                          </span>
-                          <span className="font-medium">{formatCurrency(revenue.balance)}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-bold border-t pt-2">
-                        <span>Total Revenues</span>
-                        <span>{formatCurrency(incomeStatement.total_revenues)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* COGS */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Cost of Goods Sold</h3>
-                    <div className="space-y-2">
-                      {incomeStatement.cogs.map((cog) => (
-                        <div key={cog.uuid} className="flex justify-between">
-                          <span>
-                            {cog.name} ({cog.code})
-                          </span>
-                          <span className="font-medium">{formatCurrency(cog.balance)}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-bold border-t pt-2">
-                        <span>Total COGS</span>
-                        <span>{formatCurrency(incomeStatement.total_cogs)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Gross Profit */}
-                  <div className="flex justify-between font-bold text-lg border-t pt-2">
-                    <span>Gross Profit</span>
-                    <span>{formatCurrency(incomeStatement.gross_profit)}</span>
-                  </div>
-
-                  {/* Expenses */}
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Expenses</h3>
-                    <div className="space-y-2">
-                      {incomeStatement.expenses.map((expense) => (
-                        <div key={expense.uuid} className="flex justify-between">
-                          <span>
-                            {expense.name} ({expense.code})
-                          </span>
-                          <span className="font-medium">{formatCurrency(expense.balance)}</span>
-                        </div>
-                      ))}
-                      <div className="flex justify-between font-bold border-t pt-2">
-                        <span>Total Expenses</span>
-                        <span>{formatCurrency(incomeStatement.total_expenses)}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Net Income */}
-                  <div className="flex justify-between font-bold text-xl border-t-2 pt-4">
-                    <span>Net Income</span>
-                    <span
-                      className={Number.parseFloat(incomeStatement.net_income) >= 0 ? "text-green-600" : "text-red-600"}
-                    >
-                      {formatCurrency(incomeStatement.net_income)}
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">Click "Load Statements" to view the income statement</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {incomeStatement ? (
+            <IncomeStatementTable incomeStatement={incomeStatement} loading={isLoading === "loading"} />
+          ) : (
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No income statement data</h3>
+                <p className="text-muted-foreground text-center">
+                  Click "Load Statements" to view the income statement
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="cash-flow">

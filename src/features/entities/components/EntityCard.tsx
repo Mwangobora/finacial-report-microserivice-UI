@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Building, Mail, Phone, Globe, MapPin } from "lucide-react"
-import type { Entity } from "../types"
+import type { Entity } from "@/types"
 
 interface EntityCardProps {
   entity: Entity

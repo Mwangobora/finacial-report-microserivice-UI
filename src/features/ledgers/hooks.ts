@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useApi } from "@/hooks/UseApi"
 import { getEntityLedgers, createLedger, createChartOfAccounts } from "./api"
-import type { Ledger, CreateLedgerRequest } from "./types"
+import type { Ledger, CreateLedgerRequest } from "@/types"
 
 export function useLedgers(entityUuid: string | null) {
   const [ledgers, setLedgers] = useState<Ledger[]>([])

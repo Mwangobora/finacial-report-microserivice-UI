@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useApi } from "@/hooks/UseApi"
 import { getTransactions, createTransaction } from "./api"
-import type { Transaction, CreateTransactionRequest } from "./types"
+import type { Transaction, CreateTransactionRequest } from "@/types"
 
 export function useTransactions(entityUuid: string | null, ledgerName: string | null) {
   const [transactions, setTransactions] = useState<Transaction[]>([])

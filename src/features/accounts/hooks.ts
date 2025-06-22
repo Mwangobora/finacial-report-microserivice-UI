@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useApi } from "@/hooks/UseApi"
 import { getChartOfAccounts, getAllAccounts, getEntityLedgerAccounts, getAccountBalances } from "./api"
-import type { Account, AccountBalances } from "./types"
+import type { Account, AccountBalances } from "@/types"
 export function useAccounts(entityUuid: string | null, ledgerName: string | null) {
   const [accounts, setAccounts] = useState<Account[]>([])
   const { execute, loading, error } = useApi<Account[]>()

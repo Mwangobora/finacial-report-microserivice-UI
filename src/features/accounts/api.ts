@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/api"
-import type { Account, AccountBalances } from "./types"
+import type { Account, AccountBalances } from "@/types"
 
 // Get chart of accounts for a specific ledger
 export async function getChartOfAccounts(entityUuid: string, ledgerName: string): Promise<Account[]> {

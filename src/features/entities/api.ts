@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/api"
-import type { Entity, CreateEntityRequest, Ledger, CreateLedgerRequest } from "@/types"
+import type { Entity, CreateEntityRequest } from "@/types"
 
 export async function createEntity(data: CreateEntityRequest): Promise<Entity> {
   try {
@@ -31,23 +31,4 @@ export async function listEntities(): Promise<Entity[]> {
   }
 }
 
-export async function createLedger(entityUuid: string, data: CreateLedgerRequest): Promise<Ledger> {
-  try {
-    return await apiRequest<Ledger>(`/entities/${entityUuid}/ledgers/`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    })
-  } catch (error) {
-    console.error("Error in createLedger:", error)
-    throw error
-  }
-}
 
-export async function listLedgers(entityUuid: string): Promise<Ledger[]> {
-  try {
-    return await apiRequest<Ledger[]>(`/entities/${entityUuid}/ledgers/`)
-  } catch (error) {
-    console.error("Error in listLedgers:", error)
-    throw error
-  }
-}

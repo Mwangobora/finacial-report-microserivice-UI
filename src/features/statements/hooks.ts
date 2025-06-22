@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useApi } from "@/hooks/UseApi"
 import { getBalanceSheet, getIncomeStatement, getCashFlowStatement } from "./api"
-import type { BalanceSheet, IncomeStatement, CashFlowStatement } from "./types"
+import type { BalanceSheet, IncomeStatement, CashFlowStatement } from "@/types"
 
 export function useBalanceSheet() {
   const [balanceSheet, setBalanceSheet] = useState<BalanceSheet | null>(null)

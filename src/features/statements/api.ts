@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/api"
-import type { BalanceSheet, IncomeStatement, CashFlowStatement } from "./types"
+import type { BalanceSheet, IncomeStatement, CashFlowStatement } from "@/types"
 
 // Get balance sheet for a specific ledger
 export async function getBalanceSheet(entityUuid: string, ledgerName: string): Promise<BalanceSheet> {

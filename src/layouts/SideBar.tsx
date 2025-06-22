@@ -21,7 +21,9 @@ export function Sidebar() {
               <NavLink key={item.name} to={item.path}>
                 {({ isActive }) => (
                   <Button variant={isActive ? "secondary" : "ghost"} className="w-full justify-start">
-                    <item.icon className="mr-2 h-4 w-4" />
+                    <item.icon
+                      className={`mr-2 h-4 w-4 ${isActive ? "text-blue-600" : "text-gray-400"}`}
+                    />
                     {item.name}
                   </Button>
                 )}

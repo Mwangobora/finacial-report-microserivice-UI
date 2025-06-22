@@ -1,5 +1,6 @@
 import { Building2 } from "lucide-react"
 import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { UserProfileDropdown } from "@/components/ui/user-profile-dropdown"
 
 export function Header() {
   return (
@@ -9,8 +10,9 @@ export function Header() {
           <Building2 className="h-6 w-6" />
           <span className="font-bold">Financial Reporting System</span>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center space-x-2">
           <ThemeToggle />
+          <UserProfileDropdown />
         </div>
       </div>
     </header>
