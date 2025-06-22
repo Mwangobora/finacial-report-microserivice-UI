@@ -17,7 +17,7 @@ import { EntitiesTable } from "@/features/entities/components/EntitiesTable"
 import { CreateEntityForm } from "@/features/entities/components/CreateEntityForm"
 import { useToast } from "@/hooks/use-toast"
 import { useAppContext } from "@/contexts/AppContext"
-import type { CreateEntityRequest } from "@/features/entities/types"
+import type { CreateEntityRequest } from "@/types"
 
 export function EntitiesPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -85,7 +85,7 @@ export function EntitiesPage() {
 
       <EntitiesTable
         entities={entities}
-        loading={loading === "loading"}
+        
         onAdd={() => setDialogOpen(true)}
         onSelect={handleEntitySelect}
       />

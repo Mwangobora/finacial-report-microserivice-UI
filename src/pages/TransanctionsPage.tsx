@@ -268,7 +268,7 @@ export function TransactionsPage() {
       {/* Transactions List */}
       <TransactionsTable
         transactions={transactions}
-        loading={loading === "loading"}
+        
         onAdd={() => setDialogOpen(true)}
       />
     </div>

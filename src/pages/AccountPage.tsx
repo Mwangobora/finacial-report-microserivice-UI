@@ -8,6 +8,7 @@ import { useChartOfAccounts, useAccountBalances } from "@/features/accounts/hook
 import { useAppContext } from "@/contexts/AppContext"
 import { formatCurrency } from "@/utils/FormatMoney"
 import { AccountsTable } from "@/features/accounts/components/AccountsTable"
+import type { LoadingState } from "@/types"
 
 export function AccountsPage() {
   const { selectedEntity, selectedLedger } = useAppContext()
@@ -21,6 +22,10 @@ export function AccountsPage() {
     loading: balancesLoading,
     loadAccountBalances,
   } = useAccountBalances(selectedEntity, selectedLedger)
+
+  // Explicitly type loading states
+  const chartLoadingState = chartLoading as LoadingState
+  const balancesLoadingState = balancesLoading as LoadingState
 
   const handleRefresh = () => {
     loadChartOfAccounts()
@@ -52,8 +57,8 @@ export function AccountsPage() {
           <h1 className="text-3xl font-bold tracking-tight">Account Management</h1>
           <p className="text-muted-foreground">View and manage accounts for the selected ledger</p>
         </div>
-        <Button onClick={handleRefresh} disabled={chartLoading === "loading" || balancesLoading === "loading"}>
-          <RefreshCw className={`mr-2 h-4 w-4 ${chartLoading === "loading" || balancesLoading === "loading" ? "animate-spin" : ""}`} />
+        <Button onClick={handleRefresh} disabled={chartLoading === "idle" || chartLoading === "error" || balancesLoading === "idle" || balancesLoading === "error"}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${(chartLoading === "idle" || chartLoading === "error" || balancesLoading === "idle" || balancesLoading === "error") ? "" : "animate-spin"}`} />
           Refresh
         </Button>
       </div>
@@ -132,7 +137,7 @@ export function AccountsPage() {
       {/* Chart of Accounts */}
       <AccountsTable
         accounts={chartOfAccounts}
-        loading={chartLoading === "loading"}
+        loading={chartLoadingState === "loading"}
       />
     </div>
   )

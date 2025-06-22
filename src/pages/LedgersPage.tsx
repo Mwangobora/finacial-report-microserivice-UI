@@ -22,7 +22,7 @@ import { LedgersTable } from "@/features/ledgers/components/LedgersTable"
 import { useLedgers } from "@/features/ledgers/hooks"
 import { useAppContext } from "@/contexts/AppContext"
 import { useToast } from "@/hooks/use-toast"
-import type { CreateLedgerRequest } from "@/features/ledgers/types"
+import type { CreateLedgerRequest } from "@/types"
 
 export function LedgersPage() {
   const { selectedEntity, setSelectedLedger } = useAppContext()
@@ -194,7 +194,6 @@ export function LedgersPage() {
 
       <LedgersTable
         ledgers={ledgers}
-        loading={loading === "loading"}
         onAdd={() => setDialogOpen(true)}
         onSelect={handleLedgerSelect}
         onGenerateChart={handleCreateChartOfAccounts}
