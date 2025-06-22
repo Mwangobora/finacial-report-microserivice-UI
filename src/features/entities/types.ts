@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export interface Entity {
   hidden: any
   accrual_method: any

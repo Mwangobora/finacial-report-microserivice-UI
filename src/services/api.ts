@@ -1,4 +1,4 @@
-const BASE_URL = "https://127.0.0.1:8008/report_microservice/api"
+const BASE_URL = "http://localhost:8008/report_microservice/api"
 
 export class ApiError extends Error {
   constructor(
