@@ -52,13 +52,13 @@ export function AccountsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Account Management</h1>
-          <p className="text-muted-foreground">View and manage accounts for the selected ledger</p>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Account Management</h1>
+          <p className="text-muted-foreground text-sm md:text-base">View and manage accounts for the selected ledger</p>
         </div>
-        <Button onClick={handleRefresh} disabled={chartLoading === "idle" || chartLoading === "error" || balancesLoading === "idle" || balancesLoading === "error"}>
-          <RefreshCw className={`mr-2 h-4 w-4 ${(chartLoading === "idle" || chartLoading === "error" || balancesLoading === "idle" || balancesLoading === "error") ? "" : "animate-spin"}`} />
+        <Button onClick={handleRefresh} disabled={chartLoadingState === "idle" || chartLoadingState === "error" || balancesLoadingState === "idle" || balancesLoadingState === "error"}>
+          <RefreshCw className={`mr-2 h-4 w-4 ${(chartLoadingState === "idle" || chartLoadingState === "error" || balancesLoadingState === "idle" || balancesLoadingState === "error") ? "" : "animate-spin"}`} />
           Refresh
         </Button>
       </div>

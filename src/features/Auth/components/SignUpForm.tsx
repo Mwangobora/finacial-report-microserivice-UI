@@ -168,7 +168,7 @@ export function SignUpForm({ onSwitchToLogin }: SignUpFormProps) {
             onBlur={handleInputBlur}
             error={errors.first_name}
             icon={User}
-            placeholder="John"
+            placeholder="Florence"
             autoComplete="given-name"
           />
 
@@ -181,7 +181,7 @@ export function SignUpForm({ onSwitchToLogin }: SignUpFormProps) {
             onBlur={handleInputBlur}
             error={errors.last_name}
             icon={User}
-            placeholder="Doe"
+            placeholder="Mushi"
             autoComplete="family-name"
           />
         </div>
@@ -195,7 +195,7 @@ export function SignUpForm({ onSwitchToLogin }: SignUpFormProps) {
           onBlur={handleInputBlur}
           error={errors.email}
           icon={Mail}
-          placeholder="john.doe@example.com"
+          placeholder="florence.mushi@example.com"
           autoComplete="email"
         />
 
