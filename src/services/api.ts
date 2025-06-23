@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const BASE_URL = "https://f55984pk-8008.uks1.devtunnels.ms/report_microservice/api"
+=======
+const BASE_URL = "https://financial-report-backend.onrender.com/report_microservice/api"
+>>>>>>> 3fe5ea3e507b6aceb267d865d1862eb3181e8235
 
 export class ApiError extends Error {
   constructor(
