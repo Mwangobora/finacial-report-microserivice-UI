@@ -45,7 +45,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="name">Entity Name *</Label>
           <Input
@@ -66,7 +66,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="address_1">Address Line 1</Label>
           <Input
@@ -85,7 +85,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="city">City</Label>
           <Input id="city" value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} />
@@ -108,7 +108,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="country">Country</Label>
           <Input
@@ -128,7 +128,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="phone">Phone</Label>
           <Input
@@ -148,7 +148,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="fy_start_month">Fiscal Year Start Month</Label>
           <Select
@@ -178,14 +178,14 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
         </div>
       </div>
 
-      <div className="flex items-center space-x-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex items-center space-x-2">
           <Switch
             id="accrual_method"
             checked={formData.accrual_method}
             onCheckedChange={(checked) => setFormData({ ...formData, accrual_method: checked })}
           />
-          <Label htmlFor="accrual_method">Accrual Method</Label>
+          <Label htmlFor="accrual_method" className="text-sm">Accrual Method</Label>
         </div>
         <div className="flex items-center space-x-2">
           <Switch
@@ -193,12 +193,12 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
             checked={formData.hidden}
             onCheckedChange={(checked) => setFormData({ ...formData, hidden: checked })}
           />
-          <Label htmlFor="hidden">Hidden</Label>
+          <Label htmlFor="hidden" className="text-sm">Hidden</Label>
         </div>
       </div>
 
-      <div className="flex justify-end space-x-2">
-        <Button type="submit" disabled={loading}>
+      <div className="flex justify-end">
+        <Button type="submit" disabled={loading} className="w-full sm:w-auto">
           {loading ? "Creating..." : "Create Entity"}
         </Button>
       </div>

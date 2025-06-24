@@ -6,6 +6,101 @@ import { Badge } from "@/components/ui/badge"
 import { formatCurrency } from "@/utils/FormatMoney"
 import type { BalanceSheet, IncomeStatement, CashFlowStatement } from "@/types"
 
+// Reusable component for financial statement sections
+interface FinancialSectionProps {
+  title: string
+  titleColor: string
+  items: Array<{ uuid: string; code: string; name: string; balance: string }>
+  totalLabel: string
+  totalAmount: string
+  extraRows?: Array<{ label: string; amount: string; isHighlighted?: boolean }>
+}
+
+function FinancialSection({ title, titleColor, items, totalLabel, totalAmount, extraRows }: FinancialSectionProps) {
+  return (
+    <div>
+      <h3 className={`text-lg font-semibold mb-3 ${titleColor}`}>{title}</h3>
+
+      {/* Desktop Table */}
+      <div className="hidden md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Code</TableHead>
+              <TableHead>Account Name</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.map((item) => (
+              <TableRow key={item.uuid}>
+                <TableCell>
+                  <Badge variant="outline">{item.code}</Badge>
+                </TableCell>
+                <TableCell className="font-medium">{item.name}</TableCell>
+                <TableCell className="text-right font-mono">
+                  {formatCurrency(parseFloat(item.balance))}
+                </TableCell>
+              </TableRow>
+            ))}
+            <TableRow className="border-t-2">
+              <TableCell colSpan={2} className="font-bold">{totalLabel}</TableCell>
+              <TableCell className="text-right font-bold font-mono">
+                {formatCurrency(parseFloat(totalAmount))}
+              </TableCell>
+            </TableRow>
+            {extraRows?.map((row, index) => (
+              <TableRow key={index} className={row.isHighlighted ? "bg-muted/50" : ""}>
+                <TableCell colSpan={2} className="font-bold">{row.label}</TableCell>
+                <TableCell className="text-right font-bold font-mono">
+                  {formatCurrency(parseFloat(row.amount))}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-3">
+        {items.map((item) => (
+          <Card key={item.uuid} className="p-3">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge variant="outline" className="text-xs">{item.code}</Badge>
+                </div>
+                <div className="font-medium text-sm">{item.name}</div>
+              </div>
+              <div className="font-mono font-bold text-sm">
+                {formatCurrency(parseFloat(item.balance))}
+              </div>
+            </div>
+          </Card>
+        ))}
+        <Card className="p-3 bg-muted/50">
+          <div className="flex justify-between items-center">
+            <span className="font-bold">{totalLabel}</span>
+            <span className="font-bold font-mono">
+              {formatCurrency(parseFloat(totalAmount))}
+            </span>
+          </div>
+        </Card>
+        {extraRows?.map((row, index) => (
+          <Card key={index} className={`p-3 ${row.isHighlighted ? 'bg-primary/10' : 'bg-muted/30'}`}>
+            <div className="flex justify-between items-center">
+              <span className="font-bold">{row.label}</span>
+              <span className="font-bold font-mono">
+                {formatCurrency(parseFloat(row.amount))}
+              </span>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 interface BalanceSheetTableProps {
   balanceSheet: BalanceSheet
   loading?: boolean
@@ -31,117 +126,57 @@ export function BalanceSheetTable({ balanceSheet, loading }: BalanceSheetTablePr
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {/* Assets */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 text-green-700">Assets</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Account Name</TableHead>
-                  <TableHead className="text-right">Balance</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {balanceSheet.assets.map((asset) => (
-                  <TableRow key={asset.uuid}>
-                    <TableCell>
-                      <Badge variant="outline">{asset.code}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{asset.name}</TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(parseFloat(asset.balance))}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="border-t-2">
-                  <TableCell colSpan={2} className="font-bold">Total Assets</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
-                    {formatCurrency(parseFloat(balanceSheet.total_assets))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <FinancialSection
+            title="Assets"
+            titleColor="text-green-700"
+            items={balanceSheet.assets}
+            totalLabel="Total Assets"
+            totalAmount={balanceSheet.total_assets}
+          />
 
-          {/* Liabilities */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 text-red-700">Liabilities</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Account Name</TableHead>
-                  <TableHead className="text-right">Balance</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {balanceSheet.liabilities.map((liability) => (
-                  <TableRow key={liability.uuid}>
-                    <TableCell>
-                      <Badge variant="outline">{liability.code}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{liability.name}</TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(parseFloat(liability.balance))}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="border-t-2">
-                  <TableCell colSpan={2} className="font-bold">Total Liabilities</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
-                    {formatCurrency(parseFloat(balanceSheet.total_liabilities))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <FinancialSection
+            title="Liabilities"
+            titleColor="text-red-700"
+            items={balanceSheet.liabilities}
+            totalLabel="Total Liabilities"
+            totalAmount={balanceSheet.total_liabilities}
+          />
 
-          {/* Equity */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 text-blue-700">Equity</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Account Name</TableHead>
-                  <TableHead className="text-right">Balance</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {balanceSheet.equity.map((equity) => (
-                  <TableRow key={equity.uuid}>
-                    <TableCell>
-                      <Badge variant="outline">{equity.code}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{equity.name}</TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(parseFloat(equity.balance))}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="border-t-2">
-                  <TableCell colSpan={2} className="font-bold">Total Equity</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
-                    {formatCurrency(parseFloat(balanceSheet.total_equity))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <FinancialSection
+            title="Equity"
+            titleColor="text-blue-700"
+            items={balanceSheet.equity}
+            totalLabel="Total Equity"
+            totalAmount={balanceSheet.total_equity}
+          />
 
           {/* Total Check */}
           <div className="border-t-2 pt-4">
-            <Table>
-              <TableBody>
-                <TableRow className="bg-muted/50">
-                  <TableCell className="font-bold">Total Liabilities and Equity</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <Table>
+                <TableBody>
+                  <TableRow className="bg-muted/50">
+                    <TableCell className="font-bold">Total Liabilities and Equity</TableCell>
+                    <TableCell className="text-right font-bold font-mono">
+                      {formatCurrency(parseFloat(balanceSheet.total_liabilities_and_equity))}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Mobile Card */}
+            <div className="md:hidden">
+              <Card className="p-4 bg-primary/10">
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                  <span className="font-bold text-base">Total Liabilities and Equity</span>
+                  <span className="font-bold font-mono text-base">
                     {formatCurrency(parseFloat(balanceSheet.total_liabilities_and_equity))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                  </span>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </CardContent>
@@ -174,123 +209,60 @@ export function IncomeStatementTable({ incomeStatement, loading }: IncomeStateme
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {/* Revenue */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 text-green-700">Revenue</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Account Name</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {incomeStatement.revenues.map((revenue) => (
-                  <TableRow key={revenue.uuid}>
-                    <TableCell>
-                      <Badge variant="outline">{revenue.code}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{revenue.name}</TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(parseFloat(revenue.balance))}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="border-t-2">
-                  <TableCell colSpan={2} className="font-bold">Total Revenue</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
-                    {formatCurrency(parseFloat(incomeStatement.total_revenues))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <FinancialSection
+            title="Revenue"
+            titleColor="text-green-700"
+            items={incomeStatement.revenues}
+            totalLabel="Total Revenue"
+            totalAmount={incomeStatement.total_revenues}
+          />
 
-          {/* COGS */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 text-yellow-700">Cost of Goods Sold</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Account Name</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {incomeStatement.cogs.map((cog) => (
-                  <TableRow key={cog.uuid}>
-                    <TableCell>
-                      <Badge variant="outline">{cog.code}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{cog.name}</TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(parseFloat(cog.balance))}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="border-t-2">
-                  <TableCell colSpan={2} className="font-bold">Total COGS</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
-                    {formatCurrency(parseFloat(incomeStatement.total_cogs))}
-                  </TableCell>
-                </TableRow>
-                <TableRow className="bg-muted/50">
-                  <TableCell colSpan={2} className="font-bold">Gross Profit</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
-                    {formatCurrency(parseFloat(incomeStatement.gross_profit))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <FinancialSection
+            title="Cost of Goods Sold"
+            titleColor="text-yellow-700"
+            items={incomeStatement.cogs}
+            totalLabel="Total COGS"
+            totalAmount={incomeStatement.total_cogs}
+            extraRows={[
+              { label: "Gross Profit", amount: incomeStatement.gross_profit, isHighlighted: true }
+            ]}
+          />
 
-          {/* Expenses */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3 text-red-700">Expenses</h3>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Account Name</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {incomeStatement.expenses.map((expense) => (
-                  <TableRow key={expense.uuid}>
-                    <TableCell>
-                      <Badge variant="outline">{expense.code}</Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{expense.name}</TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(parseFloat(expense.balance))}
-                    </TableCell>
-                  </TableRow>
-                ))}
-                <TableRow className="border-t-2">
-                  <TableCell colSpan={2} className="font-bold">Total Expenses</TableCell>
-                  <TableCell className="text-right font-bold font-mono">
-                    {formatCurrency(parseFloat(incomeStatement.total_expenses))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </div>
+          <FinancialSection
+            title="Expenses"
+            titleColor="text-red-700"
+            items={incomeStatement.expenses}
+            totalLabel="Total Expenses"
+            totalAmount={incomeStatement.total_expenses}
+          />
 
           {/* Net Income */}
           <div className="border-t-2 pt-4">
-            <Table>
-              <TableBody>
-                <TableRow className="bg-muted/50">
-                  <TableCell className="font-bold text-lg">Net Income</TableCell>
-                  <TableCell className="text-right font-bold font-mono text-lg">
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <Table>
+                <TableBody>
+                  <TableRow className="bg-muted/50">
+                    <TableCell className="font-bold text-lg">Net Income</TableCell>
+                    <TableCell className="text-right font-bold font-mono text-lg">
+                      {formatCurrency(parseFloat(incomeStatement.net_income))}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Mobile Card */}
+            <div className="md:hidden">
+              <Card className="p-4 bg-primary/10">
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                  <span className="font-bold text-lg">Net Income</span>
+                  <span className="font-bold font-mono text-lg">
                     {formatCurrency(parseFloat(incomeStatement.net_income))}
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+                  </span>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </CardContent>

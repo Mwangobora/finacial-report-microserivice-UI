@@ -73,7 +73,7 @@ export function EntitiesPage() {
               Create Entity
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
             <DialogHeader>
               <DialogTitle>Create New Entity</DialogTitle>
               <DialogDescription>Add a new business entity to the system</DialogDescription>
@@ -85,8 +85,6 @@ export function EntitiesPage() {
 
       <EntitiesTable
         entities={entities}
-        
-        onAdd={() => setDialogOpen(true)}
         onSelect={handleEntitySelect}
       />
     </div>

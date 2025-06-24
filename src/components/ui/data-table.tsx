@@ -115,13 +115,13 @@ export function DataTable<T extends Record<string, any>>({
     <Card>
       {(title || description || onAdd) && (
         <CardHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              {title && <CardTitle>{title}</CardTitle>}
-              {description && <CardDescription>{description}</CardDescription>}
+              {title && <CardTitle className="text-lg sm:text-xl">{title}</CardTitle>}
+              {description && <CardDescription className="text-sm">{description}</CardDescription>}
             </div>
             {onAdd && (
-              <Button onClick={onAdd}>
+              <Button onClick={onAdd} className="w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 {addButtonText}
               </Button>
@@ -133,12 +133,12 @@ export function DataTable<T extends Record<string, any>>({
         {/* Search */}
         {columns.some((col) => col.searchable) && (
           <div className="flex items-center space-x-2 mb-4">
-            <Search className="h-4 w-4 text-muted-foreground" />
+            <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <Input
               placeholder={searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-sm"
+              className="w-full sm:max-w-sm"
             />
           </div>
         )}
@@ -149,55 +149,96 @@ export function DataTable<T extends Record<string, any>>({
             <span className="ml-2">Loading...</span>
           </div>
         ) : sortedData.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
             {EmptyIcon && <EmptyIcon className="h-12 w-12 text-muted-foreground mb-4" />}
             <h3 className="text-lg font-semibold mb-2">{emptyMessage}</h3>
-            <p className="text-muted-foreground mb-4">{emptyDescription}</p>
+            <p className="text-muted-foreground mb-4 text-sm sm:text-base">{emptyDescription}</p>
             {onAdd && (
-              <Button onClick={onAdd}>
+              <Button onClick={onAdd} className="w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 {addButtonText}
               </Button>
             )}
           </div>
         ) : (
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableHead
-                      key={column.key.toString()}
-                      className={column.sortable ? "cursor-pointer hover:bg-muted/50" : ""}
-                      onClick={() => column.sortable && handleSort(column.key.toString())}
-                    >
-                      <div className="flex items-center space-x-1">
-                        <span>{column.header}</span>
-                        {column.sortable && sortColumn === column.key && (
-                          <span className="text-xs">
-                            {sortDirection === "asc" ? "↑" : "↓"}
-                          </span>
-                        )}
-                      </div>
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {sortedData.map((item, index) => (
-                  <TableRow key={item.uuid || item.id || index}>
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
                     {columns.map((column) => (
-                      <TableCell key={column.key.toString()}>
-                        {column.render
-                          ? column.render(getValue(item, column), item)
-                          : getValue(item, column)}
-                      </TableCell>
+                      <TableHead
+                        key={column.key.toString()}
+                        className={column.sortable ? "cursor-pointer hover:bg-muted/50" : ""}
+                        onClick={() => column.sortable && handleSort(column.key.toString())}
+                      >
+                        <div className="flex items-center space-x-1">
+                          <span>{column.header}</span>
+                          {column.sortable && sortColumn === column.key && (
+                            <span className="text-xs">
+                              {sortDirection === "asc" ? "↑" : "↓"}
+                            </span>
+                          )}
+                        </div>
+                      </TableHead>
                     ))}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+                </TableHeader>
+                <TableBody>
+                  {sortedData.map((item, index) => (
+                    <TableRow key={item.uuid || item.id || index}>
+                      {columns.map((column) => (
+                        <TableCell key={column.key.toString()}>
+                          {column.render
+                            ? column.render(getValue(item, column), item)
+                            : getValue(item, column)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+              {sortedData.map((item, index) => (
+                <Card key={item.uuid || item.id || index} className="p-4">
+                  <div className="space-y-3">
+                    {columns.map((column) => {
+                      const value = column.render
+                        ? column.render(getValue(item, column), item)
+                        : getValue(item, column);
+
+                      // Skip empty values and actions column for mobile
+                      if (!value || value === "-" || column.key === "actions") return null;
+
+                      return (
+                        <div key={column.key.toString()} className="flex justify-between items-start">
+                          <span className="text-sm font-medium text-muted-foreground min-w-0 flex-1">
+                            {column.header}:
+                          </span>
+                          <div className="text-sm ml-2 text-right min-w-0 flex-1">
+                            {value}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* Actions for mobile - always show at bottom */}
+                    {columns.find(col => col.key === "actions") && (
+                      <div className="pt-3 border-t">
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          {columns.find(col => col.key === "actions")?.render?.(null, item)}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </>
         )}
       </CardContent>
     </Card>

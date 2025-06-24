@@ -8,7 +8,7 @@ export async function createTransaction(
   data: CreateTransactionRequest,
 ): Promise<Transaction> {
   return apiRequest<Transaction>(
-    `/report_microservice/api/entity/${entityUuid}/ledgers/${ledgerName}/create-transaction/`,
+    `/entity/${entityUuid}/ledgers/${ledgerName}/create-transaction/`,
     {
       method: "POST",
       body: JSON.stringify(data),
@@ -18,5 +18,6 @@ export async function createTransaction(
 
 // Get all transactions for a specific ledger
 export async function getTransactions(entityUuid: string, ledgerName: string): Promise<Transaction[]> {
-  return apiRequest<Transaction[]>(`/report_microservice/api/entity/${entityUuid}/ledgers/${ledgerName}/transactions/`)
+  const response = await apiRequest<{ transactions: Transaction[] }>(`/entity/${entityUuid}/ledgers/${ledgerName}/transactions/`)
+  return response.transactions || []
 }

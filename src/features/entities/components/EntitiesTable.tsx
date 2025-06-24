@@ -96,8 +96,9 @@ export function EntitiesTable({ entities, loading, onAdd, onSelect }: EntitiesTa
           variant="outline"
           size="sm"
           onClick={() => onSelect?.(entity.uuid)}
+          className="w-full sm:w-auto"
         >
-          Select
+          Select Entity
         </Button>
       ),
     },

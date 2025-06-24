@@ -131,7 +131,7 @@ export function LedgersPage() {
               Create Ledger
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto mx-4">
             <DialogHeader>
               <DialogTitle>Create New Ledger</DialogTitle>
               <DialogDescription>Add a new ledger to the selected entity</DialogDescription>
@@ -149,14 +149,14 @@ export function LedgersPage() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="flex items-center space-x-2">
                   <Switch
                     id="posted"
                     checked={formData.posted}
                     onCheckedChange={(checked) => setFormData({ ...formData, posted: checked })}
                   />
-                  <Label htmlFor="posted">Posted</Label>
+                  <Label htmlFor="posted" className="text-sm">Posted</Label>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -165,7 +165,7 @@ export function LedgersPage() {
                     checked={formData.locked}
                     onCheckedChange={(checked) => setFormData({ ...formData, locked: checked })}
                   />
-                  <Label htmlFor="locked">Locked</Label>
+                  <Label htmlFor="locked" className="text-sm">Locked</Label>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -174,15 +174,15 @@ export function LedgersPage() {
                     checked={formData.hidden}
                     onCheckedChange={(checked) => setFormData({ ...formData, hidden: checked })}
                   />
-                  <Label htmlFor="hidden">Hidden</Label>
+                  <Label htmlFor="hidden" className="text-sm">Hidden</Label>
                 </div>
               </div>
 
-              <div className="flex justify-end space-x-2">
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:space-x-2">
+                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)} className="w-full sm:w-auto">
                   Cancel
                 </Button>
-                <Button type="submit" disabled={creating}>
+                <Button type="submit" disabled={creating} className="w-full sm:w-auto">
                   {creating ? "Creating..." : "Create Ledger"}
                 </Button>
               </div>
@@ -193,7 +193,6 @@ export function LedgersPage() {
 
       <LedgersTable
         ledgers={ledgers}
-        onAdd={() => setDialogOpen(true)}
         onSelect={handleLedgerSelect}
         onGenerateChart={handleCreateChartOfAccounts}
         generatingChart={creatingChart}

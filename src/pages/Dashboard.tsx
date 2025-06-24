@@ -157,28 +157,7 @@ export function Dashboard() {
           </Card>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }}>
-          <Card className="shadow hover:shadow-lg transition-shadow duration-300">
-            <CardHeader>
-              <CardTitle>System Status</CardTitle>
-              <CardDescription>Current system information</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>API Status:</span>
-                <span className="text-green-600 font-semibold animate-pulse">Connected</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Base URL:</span>
-                <span className="text-xs text-muted-foreground">127.0.0.1:8008</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Version:</span>
-                <span className="text-muted-foreground">1.0.0</span>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        
       </div>
     </div>
   )

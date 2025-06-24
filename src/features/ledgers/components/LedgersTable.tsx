@@ -81,19 +81,21 @@ export function LedgersTable({
       key: "actions",
       header: "Actions",
       render: (_, ledger) => (
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => onSelect?.(ledger.ledger_name)}
+            className="w-full sm:w-auto"
           >
-            Select
+            Select Ledger
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => onGenerateChart?.(ledger.ledger_name)}
             disabled={generatingChart === ledger.ledger_name}
+            className="w-full sm:w-auto"
           >
             {generatingChart === ledger.ledger_name ? (
               <>

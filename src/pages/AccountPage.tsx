@@ -57,15 +57,20 @@ export function AccountsPage() {
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Account Management</h1>
           <p className="text-muted-foreground text-sm md:text-base">View and manage accounts for the selected ledger</p>
         </div>
-        <Button onClick={handleRefresh} disabled={chartLoadingState === "idle" || chartLoadingState === "error" || balancesLoadingState === "idle" || balancesLoadingState === "error"}>
+        <Button
+          onClick={handleRefresh}
+          disabled={chartLoadingState === "idle" || chartLoadingState === "error" || balancesLoadingState === "idle" || balancesLoadingState === "error"}
+          className="w-full sm:w-auto"
+        >
           <RefreshCw className={`mr-2 h-4 w-4 ${(chartLoadingState === "idle" || chartLoadingState === "error" || balancesLoadingState === "idle" || balancesLoadingState === "error") ? "" : "animate-spin"}`} />
-          Refresh
+          <span className="hidden sm:inline">Refresh</span>
+          <span className="sm:hidden">Refresh Data</span>
         </Button>
       </div>
 
       {/* Account Balances Summary */}
       {accountBalances && (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Assets</CardTitle>

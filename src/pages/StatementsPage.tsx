@@ -60,14 +60,15 @@ export function StatementsPage() {
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Financial Statements</h1>
           <p className="text-muted-foreground text-sm md:text-base">View and download your financial statements</p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-col sm:flex-row gap-2 sm:space-x-2">
           <Button
             onClick={handleLoadStatements}
             disabled={bsLoading === "loading" || isLoading === "loading" || cfLoading === "loading"}
+            className="w-full sm:w-auto"
           >
             {bsLoading === "loading" || isLoading === "loading" || cfLoading === "loading" ? "Loading..." : "Load Statements"}
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" className="w-full sm:w-auto">
             <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
@@ -75,10 +76,10 @@ export function StatementsPage() {
       </div>
 
       <Tabs defaultValue="balance-sheet" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="balance-sheet">Balance Sheet</TabsTrigger>
-          <TabsTrigger value="income-statement">Income Statement</TabsTrigger>
-          <TabsTrigger value="cash-flow">Cash Flow Statement</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 h-auto sm:h-10">
+          <TabsTrigger value="balance-sheet" className="text-xs sm:text-sm">Balance Sheet</TabsTrigger>
+          <TabsTrigger value="income-statement" className="text-xs sm:text-sm">Income Statement</TabsTrigger>
+          <TabsTrigger value="cash-flow" className="text-xs sm:text-sm">Cash Flow</TabsTrigger>
         </TabsList>
 
         <TabsContent value="balance-sheet">
@@ -122,37 +123,37 @@ export function StatementsPage() {
             <CardContent>
               {cashFlowStatement ? (
                 <div className="space-y-6">
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <div className="text-center">
-                      <h3 className="font-semibold">Operating Activities</h3>
-                      <div className="text-2xl font-bold">
+                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <h3 className="font-semibold text-sm sm:text-base">Operating Activities</h3>
+                      <div className="text-xl sm:text-2xl font-bold mt-2">
                         {formatCurrency(cashFlowStatement.cash_from_operating_activities)}
                       </div>
                     </div>
-                    <div className="text-center">
-                      <h3 className="font-semibold">Investing Activities</h3>
-                      <div className="text-2xl font-bold">
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <h3 className="font-semibold text-sm sm:text-base">Investing Activities</h3>
+                      <div className="text-xl sm:text-2xl font-bold mt-2">
                         {formatCurrency(cashFlowStatement.cash_from_investing_activities)}
                       </div>
                     </div>
-                    <div className="text-center">
-                      <h3 className="font-semibold">Financing Activities</h3>
-                      <div className="text-2xl font-bold">
+                    <div className="text-center p-4 bg-muted/30 rounded-lg">
+                      <h3 className="font-semibold text-sm sm:text-base">Financing Activities</h3>
+                      <div className="text-xl sm:text-2xl font-bold mt-2">
                         {formatCurrency(cashFlowStatement.cash_from_financing_activities)}
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="flex justify-between font-bold">
-                      <span>Net Increase in Cash</span>
-                      <span>{formatCurrency(cashFlowStatement.net_increase_in_cash)}</span>
+                  <div className="space-y-4 bg-muted/20 p-4 rounded-lg">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                      <span className="font-bold text-sm sm:text-base">Net Increase in Cash</span>
+                      <span className="font-bold text-sm sm:text-base">{formatCurrency(cashFlowStatement.net_increase_in_cash)}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Beginning Cash Balance</span>
-                      <span>{formatCurrency(cashFlowStatement.beginning_cash_balance)}</span>
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                      <span className="text-sm sm:text-base">Beginning Cash Balance</span>
+                      <span className="text-sm sm:text-base">{formatCurrency(cashFlowStatement.beginning_cash_balance)}</span>
                     </div>
-                    <div className="flex justify-between font-bold text-lg border-t pt-2">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0 font-bold text-base sm:text-lg border-t pt-2">
                       <span>Ending Cash Balance</span>
                       <span>{formatCurrency(cashFlowStatement.ending_cash_balance)}</span>
                     </div>
