@@ -1,7 +1,6 @@
+const BASE_URL = import.meta.env.VITE_API_BASE_URL as string
 
-const BASE_URL = "http://localhost:8008/report_microservice/api"
-
-
+// const BASE_URL = "https://f55984pk-8008.uks1.devtunnels.ms/report_microservice/api"
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -31,12 +30,12 @@ export async function apiRequest<T>(endpoint: string, options: RequestInit = {})
     "Content-Type": "application/json",
   }
 
-  // Add existing headers from options
+  // Add existing headers 
   if (options.headers) {
     Object.assign(headers, options.headers)
   }
 
-  // Add Authorization header if token exists
+  // Add Authorization header 
   if (token) {
     headers.Authorization = `Bearer ${token}`
   }

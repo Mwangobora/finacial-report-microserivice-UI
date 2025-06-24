@@ -28,6 +28,8 @@ import { formatDateTime } from "@/utils/FormatDate"
 import { useToast } from "@/hooks/use-toast"
 import type { CreateTransactionRequest } from "@/types"
 import { TransactionsTable } from "@/features/transanctions/components/TransactionsTable"
+import { TransactionForm } from "./TransactionForm"
+import { TransactionSummary } from "./TransactionSummary"
 
 export function TransactionsPage() {
   const navigate = useNavigate()
@@ -224,197 +226,35 @@ export function TransactionsPage() {
               Create Transaction
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Create New Transaction</DialogTitle>
-              <DialogDescription>Record a new financial transaction</DialogDescription>
-            </DialogHeader>
-
-            {(!selectedEntity || !selectedLedger) && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
-                <p className="text-sm text-yellow-800">
-                  Please select an entity and ledger before creating transactions.
-                  {!selectedEntity && " No entity selected."}
-                  {!selectedLedger && " No ledger selected."}
-                </p>
-              </div>
-            )}
-
-            {selectedEntity && selectedLedger && (
-              <div className="bg-green-50 border border-green-200 rounded-md p-3">
-                <p className="text-sm text-green-800">
-                  Creating transaction for: <strong>Entity {selectedEntity}</strong> → <strong>Ledger {selectedLedger}</strong>
-                </p>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="account_uuid">Account *</Label>
-                <Select
-                  value={formData.account_uuid}
-                  onValueChange={(value) => setFormData({ ...formData, account_uuid: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select account" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {chartOfAccounts.map((account) => (
-                      <SelectItem key={account.uuid} value={account.uuid}>
-                        {account.account_code} - {account.account_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  The primary account for this transaction
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="corresponding_account_uuid">Corresponding Account *</Label>
-                <Select
-                  value={formData.corresponding_account_uuid}
-                  onValueChange={(value) => setFormData({ ...formData, corresponding_account_uuid: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select corresponding account" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-[200px] overflow-y-auto">
-                    {chartOfAccounts
-                      .filter(account => account.uuid !== formData.account_uuid)
-                      .map((account) => (
-                        <SelectItem key={account.uuid} value={account.uuid}>
-                          {account.account_code} - {account.account_name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground">
-                  The corresponding account for double-entry bookkeeping (must be different from the main account)
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="amount">Amount *</Label>
-                  <Input
-                    id="amount"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: Number.parseFloat(e.target.value) || 0 })}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="tx_type">Transaction Type *</Label>
-                  <Select
-                    value={formData.tx_type}
-                    onValueChange={(value: "dr" | "cr") => setFormData({ ...formData, tx_type: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dr">Debit (DR)</SelectItem>
-                      <SelectItem value="cr">Credit (CR)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Entity Unit UUID is automatically populated from selected entity */}
-              <div className="space-y-2">
-                <Label htmlFor="entity_unit_uuid">Entity Unit UUID</Label>
-                <Input
-                  id="entity_unit_uuid"
-                  value={formData.entity_unit_uuid}
-                  disabled
-                  placeholder="Automatically populated from selected entity"
-                  className="bg-muted"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Transaction description"
-                  rows={3}
-                />
-              </div>
-
-
-
-              <div className="flex justify-end space-x-2">
-                <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={creating || !isFormValid}
-                >
-                  {creating ? "Creating..." : "Create Transaction"}
-                </Button>
-              </div>
-
-
-            </form>
-          </DialogContent>
+          <TransactionForm
+            open={dialogOpen}
+            setOpen={setDialogOpen}
+            creating={creating}
+            setCreating={setCreating}
+            formData={formData}
+            setFormData={setFormData}
+            onSubmit={handleSubmit}
+            chartOfAccounts={chartOfAccounts}
+            selectedEntity={selectedEntity}
+            selectedLedger={selectedLedger}
+            isFormValid={isFormValid as boolean}
+          />
         </Dialog>
       </div>
 
       {/* Transaction Summary */}
       {selectedEntity && selectedLedger && (
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Total Transactions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{safeTransactions.length}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Total Debits</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {formatCurrency(
-                  safeTransactions.filter((t) => t.tx_type === "dr").reduce((sum, t) => sum + Number.parseFloat(t.amount), 0),
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Total Credits</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {formatCurrency(
-                  safeTransactions.filter((t) => t.tx_type === "cr").reduce((sum, t) => sum + Number.parseFloat(t.amount), 0),
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <TransactionSummary transactions={safeTransactions} />
       )}
 
       {/* Transactions List */}
       {selectedEntity && selectedLedger ? (
-        <TransactionsTable
-          transactions={safeTransactions}
-          onAdd={() => setDialogOpen(true)}
-        />
+        <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+          <TransactionsTable
+            transactions={safeTransactions}
+            onAdd={() => setDialogOpen(true)}
+          />
+        </div>
       ) : (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">

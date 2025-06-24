@@ -15,7 +15,7 @@ export function SidebarLayout() {
         {mobileOpen && (
           <div className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={() => setMobileOpen(false)} />
         )}
-        <main className="flex-1 p-4 md:p-6">
+        <main className="flex-1 p-4 md:p-6 overflow-auto" style={{ height: '100vh' }}>
           <Outlet />
         </main>
       </div>

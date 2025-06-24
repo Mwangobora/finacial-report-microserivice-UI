@@ -37,10 +37,21 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
     meta: {},
     managers: [],
   })
+  const [error, setError] = useState<string>("");
+
+  const validatePhone = (phone: string) => {
+   
+    return /^\+\d{8,}$/.test(phone);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await onSubmit(formData)
+    e.preventDefault();
+    setError("");
+    if (!validatePhone(formData.phone)) {
+      setError("Phone number must start with country code (e.g. +123456789) and contain only numbers.");
+      return;
+    }
+    await onSubmit(formData);
   }
 
   return (
@@ -62,6 +73,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
             value={formData.path}
             onChange={(e) => setFormData({ ...formData, path: e.target.value })}
             required
+            placeholder="my-new-business-path"
           />
         </div>
       </div>
@@ -73,6 +85,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
             id="address_1"
             value={formData.address_1}
             onChange={(e) => setFormData({ ...formData, address_1: e.target.value })}
+            placeholder="456 Main St"
           />
         </div>
         <div className="space-y-2">
@@ -81,6 +94,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
             id="address_2"
             value={formData.address_2}
             onChange={(e) => setFormData({ ...formData, address_2: e.target.value })}
+            placeholder="Suite 200"
           />
         </div>
       </div>
@@ -96,6 +110,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
             id="state"
             value={formData.state}
             onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+            placeholder="CA"
           />
         </div>
         <div className="space-y-2">
@@ -135,7 +150,11 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
             id="phone"
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+            placeholder="+255766074075"
           />
+          {error && (
+            <p className="text-red-500 text-xs mt-1">{error}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="website">Website</Label>
@@ -144,6 +163,7 @@ export function CreateEntityForm({ onSubmit, loading }: CreateEntityFormProps) {
             type="url"
             value={formData.website}
             onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+            placeholder="https://www.smartinno.com"
           />
         </div>
       </div>

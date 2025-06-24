@@ -23,9 +23,9 @@ export function useTransactions(entityUuid: string | null, ledgerName: string | 
   const addTransaction = async (transactionData: CreateTransactionRequest) => {
     if (!entityUuid || !ledgerName) throw new Error("No entity or ledger selected")
 
-    const newTransaction = await createTransaction(entityUuid, ledgerName, transactionData)
-    setTransactions((prev) => [...prev, newTransaction])
-    return newTransaction
+    await createTransaction(entityUuid, ledgerName, transactionData)
+    // After creating, reload all transactions from backend for consistency
+    await loadTransactions()
   }
 
   useEffect(() => {
