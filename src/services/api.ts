@@ -1,6 +1,5 @@
 const BASE_URL = import.meta.env.VITE_API_BASE_URL as string
 
-// const BASE_URL = "https://f55984pk-8008.uks1.devtunnels.ms/report_microservice/api"
 export class ApiError extends Error {
   constructor(
     public status: number,
@@ -11,7 +10,6 @@ export class ApiError extends Error {
   }
 }
 
-// Cookie utility function
 const getCookie = (name: string): string | null => {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -22,20 +20,16 @@ const getCookie = (name: string): string | null => {
 export async function apiRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const url = `${BASE_URL}${endpoint}`
 
-  // Get auth token from cookies
   const token = getCookie("auth_token")
 
-  // Prepare headers with authentication
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   }
 
-  // Add existing headers 
   if (options.headers) {
     Object.assign(headers, options.headers)
   }
 
-  // Add Authorization header 
   if (token) {
     headers.Authorization = `Bearer ${token}`
   }

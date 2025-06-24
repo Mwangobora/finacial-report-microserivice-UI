@@ -22,7 +22,6 @@ export function printStatementSection(htmlId: string, name: string) {
   const printWindow = window.open('', '_blank');
   if (printWindow) {
     printWindow.document.write('<html><head><title>' + name + '</title>');
-    // Optionally add styles here for print formatting
     printWindow.document.write('</head><body>' + input.innerHTML + '</body></html>');
     printWindow.document.close();
     printWindow.focus();
